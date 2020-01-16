@@ -1,0 +1,50 @@
+# Docker Compose description of the combined application.
+#
+# 'docker-compose up' will run this.
+version: "3.7"  # requires Docker Compose 1.13 or later
+
+services:
+  microservice1:
+    # Identical to the consumer.
+    build: microservice1
+    command: sh -c '/usr/src/app/microservice1/wait-for.sh rabbitmq:5672 -- /usr/src/app/microservice1/entrypoint.sh'
+    ports:
+      # RestAPI
+      - '5000:5000'
+    depends_on:
+      - "rabbitmq"
+    environment:
+      OWMAPI: ${OWMAPI}
+      AMQP_URL: 'amqp://guest:guest@rabbitmq?connection_attempts=5&retry_delay=5'
+    networks:
+      - network
+
+  microservice2:
+      # Identical to the consumer.
+      build: microservice2
+      command: sh -c '/usr/src/app/microservice2/wait-for.sh rabbitmq:5672 -- /usr/src/app/microservice2/entrypoint.sh'
+      depends_on:
+        - "rabbitmq"
+      environment:
+        OWMAPI: ${OWMAPI}
+        AMQP_URL: 'amqp://guest:guest@rabbitmq?connection_attempts=5&retry_delay=5'
+      networks:
+        - network
+
+  rabbitmq:
+    image: 'rabbitmq:3.6-management-alpine'
+    environment:
+      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: '-rabbit heartbeat 3600'
+    ports:
+      # AMQP
+      - '5672:5672'
+      # management UI
+      - '15672:15672'
+    networks:
+      - network
+
+
+networks:
+  # Declare our private network.  We must declare one for the magic
+  # Docker DNS to work, but otherwise its default settings are fine.
+  network: {}

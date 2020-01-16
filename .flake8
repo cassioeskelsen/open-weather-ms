@@ -1,0 +1,4 @@
+[flake8]
+ignore = E722
+exclude = .git,__pycache__, .idea
+max-line-length = 120

@@ -1,0 +1,6 @@
+flake8
+black
+requests
+pika
+Flask
+Flask-Testing
