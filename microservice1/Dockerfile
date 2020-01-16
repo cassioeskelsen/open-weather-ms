@@ -8,4 +8,3 @@ WORKDIR /usr/src/app
 RUN pip install -r ./microservice1/requirements.txt
 RUN [ "chmod", "+x", "/usr/src/app/microservice1/wait-for.sh" ]
 RUN [ "chmod", "+x", "/usr/src/app/microservice1/entrypoint.sh" ]
-Microservice application demonstration to access OpenWeaterAPI
