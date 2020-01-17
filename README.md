@@ -27,3 +27,9 @@ Deverão ser feitos 2 microservices:
 **Microservice2**: será responsável pela consulta no provedor de informações. Nessa POC o provedor será o OpenWeatherMap, também conhecido simplesmente como OpenWeather.
 
 A comunicação entre os dois microservices deverá ser feita por algum serviço de mensageria. Aqui será utilizado o RabbitMQ.
+
+
+
+#### Execução dos testes
+
+python -m unittest discover -s tests -v

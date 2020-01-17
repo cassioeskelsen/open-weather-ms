@@ -4,3 +4,6 @@ requests
 pika
 Flask
 Flask-Testing
+psycopg2
+cryptography
+Flask-SQLAlchemy

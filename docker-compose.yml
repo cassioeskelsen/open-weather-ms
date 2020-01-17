@@ -12,24 +12,28 @@ services:
       # RestAPI
       - '5000:5000'
     depends_on:
-      - "rabbitmq"
+      - rabbitmq
+      - database
+    environment:
+      OWMAPI: ${OWMAPI}
+      AMQP_URL: 'amqp://guest:guest@rabbitmq?connection_attempts=5&retry_delay=5'
+    env_file: database.conf
+    networks:
+      - network
+      - db_nw
+
+  microservice2:
+    # Identical to the consumer.
+    build: microservice2
+    command: sh -c '/usr/src/app/microservice2/wait-for.sh rabbitmq:5672 -- /usr/src/app/microservice2/entrypoint.sh'
+    depends_on:
+      - database
+      - rabbitmq
     environment:
       OWMAPI: ${OWMAPI}
       AMQP_URL: 'amqp://guest:guest@rabbitmq?connection_attempts=5&retry_delay=5'
     networks:
       - network
-
-  microservice2:
-      # Identical to the consumer.
-      build: microservice2
-      command: sh -c '/usr/src/app/microservice2/wait-for.sh rabbitmq:5672 -- /usr/src/app/microservice2/entrypoint.sh'
-      depends_on:
-        - "rabbitmq"
-      environment:
-        OWMAPI: ${OWMAPI}
-        AMQP_URL: 'amqp://guest:guest@rabbitmq?connection_attempts=5&retry_delay=5'
-      networks:
-        - network
 
   rabbitmq:
     image: 'rabbitmq:3.6-management-alpine'
@@ -43,8 +47,24 @@ services:
     networks:
       - network
 
+  database:
+    container_name: postgres
+    image: postgres:latest
+    env_file: database.conf
+    networks:
+      - db_nw
+    ports:
+      - 5432:5432
+    volumes:
+      - db_volume:/var/lib/postgresql
+
+volumes:
+  db_volume:
+
 
 networks:
   # Declare our private network.  We must declare one for the magic
   # Docker DNS to work, but otherwise its default settings are fine.
   network: {}
+  db_nw:
+    driver: bridge

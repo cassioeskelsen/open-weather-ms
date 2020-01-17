@@ -3,12 +3,12 @@
 
 import os
 import json
-from flask import Flask, g
-
+from flask import g
 from microservice1.broker_interface.generic_producer import GenericProducer
+from microservice1.flask_app import create_app
 from microservice1.weather_response_handler import WeatherResponseHandler
 
-app = Flask(__name__)
+app = create_app()
 
 rabbitmq_host = os.environ.get(
     "AMQP_URL", "amqp://guest:guest@localhost?connection_attempts=5&retry_delay=5"
@@ -55,7 +55,7 @@ def update_forecast(city_name):
 
 if __name__ == "__main__":
     with app.app_context():
-        wrh = WeatherResponseHandler()
+        wrh = WeatherResponseHandler(app)
         wrh.start()
 
     app.run(host="0.0.0.0", port=5000, debug=True)
