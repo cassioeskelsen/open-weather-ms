@@ -5,7 +5,7 @@ import json
 from microservice2.open_weather.openweather_client import OpenWeatherClient
 
 
-class SetupTest(unittest.TestCase):
+class TestOpenWeather(unittest.TestCase):
     def test_api_key_from_environment(self):
         owc = OpenWeatherClient()
         self.assertEqual(owc.api_key, os.getenv("OWMAPI"))

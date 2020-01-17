@@ -7,7 +7,7 @@ from microservice1.flask_app import create_app
 from microservice1.forecast_storage.models import Forecast
 
 
-class SetupTest(unittest.TestCase):
+class TestStorage(unittest.TestCase):
     def setUp(self):
         app = create_app(config=config.TestConfig)
         self.app = app
