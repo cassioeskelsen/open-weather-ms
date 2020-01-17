@@ -26,6 +26,7 @@ class ProductionConfig(BaseConfig):
 
 
 class TestConfig(BaseConfig):
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     DEBUG = True
     TESTING = True
     WTF_CSRF_ENABLED = False

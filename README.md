@@ -30,6 +30,75 @@ A comunicação entre os dois microservices deverá ser feita por algum serviço
 
 
 
-#### Execução dos testes
+#### Testando o código
 
+:warning: **Atenção**
+
+Você deve setar a variável de ambiente OWMAPI com sua chave de API do OpenWeather. Essa chave não é gravada no GITHUB pois é individual
+
+Exemplos: supondo que sua chave seja XPTO:
+
+No linux:
+```bash
+export OWMAPI=XPTO
+```
+No Windows:
+```bash
+set OWMAPI=XPTO
+```
+
+Obtendo os fontes
+
+```bash
+git clone https://github.com/cassioeskelsen/open-weather-ms.git
+```
+
+Setando as variáveis de ambiente
+
+```bash
+Linux:
+source ./env.sh
+
+Windows:
+env.bat
+```
+
+Construindo e subindo o ambiente docker
+```bash
+docker-compose up -d --build
+```
+##### Testando o sistema
+
+Junto com os fontes segue um pequeno utilitário para testar o sistema, o weather.py
+
+Exemplos:
+
+Solicita a previsão do tempo no OpenWeather e grava no banco (sempre no format Cidade, Codigo País ou apenas cidade):_
+```bash
+python weather.py -r Indaial,BR
+```
+
+lista a previsão previamente gravada:_
+```bash
+python weather.py -l Indaial,BR
+```
+
+solicita e lista a previsão (delay de 1 segundo para dar tempo de buscar no OpenWeather):_
+```bash
+python weather.py -s Blumenau,BR
+```
+
+#### Todos comandos de uma vez (linux)
+```bash
+git clone https://github.com/cassioeskelsen/open-weather-ms.git
+source ./env.sh
+docker-compose up -d --build
+python weather.py -r Indaial,BR
+python weather.py -l Indaial,BR
+python weather.py -s Blumenau,BR
+```
+
+##### Testes unitários
+```bash
 python -m unittest discover -s tests -v
+```
