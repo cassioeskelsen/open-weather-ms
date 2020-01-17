@@ -145,5 +145,5 @@ python weather.py -s Blumenau,BR
 Obs: por enquanto os testes rodam na base quente e não foi feito mock-up do broker, ele precisa estar no ar para os testes passarem.
 
 ```bash
-python -m unittest discover -s tests -v
+python -W ignore  -m unittest discover -s . -b
 ```
