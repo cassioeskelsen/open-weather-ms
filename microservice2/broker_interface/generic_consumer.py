@@ -56,5 +56,29 @@ class GenericConsumer(object):
         except KeyboardInterrupt:
             self._connection.close()
 
+    def get_next_message(self, max_retry=5):
+        """
+
+        :param max_retry: max attempts to get messages. One second interval between attempts.
+        :return: message or None
+        """
+        from time import sleep
+
+        retry_count = 0
+
+        self.open_connection()
+
+        while True:
+            method, property, body = self._channel.basic_get(
+                queue=self.queue_name, auto_ack=True
+            )
+            if body:
+                return body
+            else:
+                if retry_count < max_retry:
+                    sleep(1)
+                else:
+                    return None
+
     def close(self):
         self._connection.close()
