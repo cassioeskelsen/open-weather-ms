@@ -24,7 +24,7 @@ def help():
 
 
 def request_forecast(city_name, list=False):
-    r = requests.get(server_url.format(city_name))
+    r = requests.get(server_url.format(city_name.strip()))
     if r.status_code == 200:
         print("OK")
         if list:
@@ -37,8 +37,8 @@ def request_forecast(city_name, list=False):
 def list_forecast(city_name):
     country_code = "BR"
     if "," in city_name:
-        country_code = city_name.split(",")[1]
-        city_name = city_name.split(",")[0]
+        country_code = city_name.split(",")[1].strip()
+        city_name = city_name.split(",")[0].strip()
     with app.app_context():
         forecasts = Forecast().get_forecasts(city_name, country_code)
         for f in forecasts:
