@@ -117,17 +117,17 @@ Exemplos:
 
 Solicita a previsão do tempo no OpenWeather e grava no banco (sempre no format Cidade, Codigo País ou apenas cidade):_
 ```bash
-python weather.py -r Indaial,BR
+python3 weather.py -r Indaial,BR
 ```
 
 lista a previsão previamente gravada:
 ```bash
-python weather.py -l Indaial,BR
+python3 weather.py -l Indaial,BR
 ```
 
 solicita e lista a previsão (delay de 1 segundo para dar tempo de buscar no OpenWeather):_
 ```bash
-python weather.py -s Blumenau,BR
+python3 weather.py -s Blumenau,BR
 ```
 
 Alternativamente pode ser usado o curl para solicitar a previsão no OpenWeather, Exemplo:
@@ -145,9 +145,9 @@ export OWMAPI=SUA_API
 source ./env.sh
 docker-compose up -d --build
 pip3 install -r requirements.txt
-python weather.py -r Indaial,BR
-python weather.py -l Indaial,BR
-python weather.py -s Blumenau,BR
+python3 weather.py -r Indaial,BR
+python3 weather.py -l Indaial,BR
+python3 weather.py -s Blumenau,BR
 ```
 
 ##### Testes unitários e de Integração
@@ -155,5 +155,5 @@ python weather.py -s Blumenau,BR
 Obs: por enquanto os testes rodam na base quente e não foi feito mock-up do broker, ele precisa estar no ar para os testes passarem.
 
 ```bash
-python -W ignore  -m unittest discover -s . -b
+python3 -W ignore  -m unittest discover -s . -b
 ```
