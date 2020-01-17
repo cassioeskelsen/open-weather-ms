@@ -68,6 +68,8 @@ As requisições do microservice1 para o microservice2 são feitas pelo tópico 
 
 **Estou considerando que você já tenha instalado o Python3, o PIP3, docker e docker-compose**
 
+Eu [gravei um vídeo](https://www.youtube.com/watch?v=mO0oCRzTnSg) com a execução dos passos/testes caso você deseje apenas ter uma visão geral sem instalar nada
+
 :warning: **Atenção**
 
 Você deve setar a variável de ambiente OWMAPI com sua chave de API do OpenWeather. Essa chave não é gravada no GITHUB pois é individual
