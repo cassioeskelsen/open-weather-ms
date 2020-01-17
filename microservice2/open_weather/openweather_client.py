@@ -3,7 +3,7 @@
 import os
 import requests
 
-from microservice2.open_weather.forecast import Forecast
+from microservice2.models.forecast import Forecast
 
 
 class OpenWeatherClient:

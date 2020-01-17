@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import json
 
-from microservice2.open_weather.daily_forecast import DailyForecast
+from microservice2.models.daily_forecast import DailyForecast
 
 
 class Forecast:
