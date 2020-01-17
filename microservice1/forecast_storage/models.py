@@ -50,13 +50,18 @@ class Forecast(db.Model):
 
     @staticmethod
     def get_forecasts(_city_name, _country_code):
-        print("{}".format(_city_name))
-        print("{}".format(_country_code))
         return (
             Forecast.query.filter_by(city_name=_city_name, country_code=_country_code)
             .order_by(Forecast.timestamp)
             .all()
         )
+
+    @staticmethod
+    def delete_forecasts(_city_name, _country_code):
+        Forecast.query.filter_by(
+            city_name=_city_name, country_code=_country_code
+        ).delete()
+        db.session.commit()
 
     def getDate(self):
         return datetime.fromtimestamp(self.timestamp).strftime("%d/%m/%Y")
