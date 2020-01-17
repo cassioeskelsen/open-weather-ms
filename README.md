@@ -103,6 +103,12 @@ docker-compose up -d --build
 ```
 ##### Testando o sistema
 
+Instalar requerimentos localmente (para rodar o script e testes)
+
+```bash
+pip3 install -r requirements.txt
+```
+
 Junto com os fontes segue um pequeno utilitário para testar o sistema, o weather.py
 
 Exemplos:
@@ -135,6 +141,7 @@ git clone https://github.com/cassioeskelsen/open-weather-ms.git
 cd open-weather-ms
 source ./env.sh
 docker-compose up -d --build
+pip3 install -r requirements.txt
 python weather.py -r Indaial,BR
 python weather.py -l Indaial,BR
 python weather.py -s Blumenau,BR
