@@ -17,6 +17,8 @@ a) Sabe-se que uma cidade grande pode ter vários microclimas diferentes e para 
 
 b) Será utilizado o SI (Sistema Métrico) para os valores.
 
+c) A API REST tem apenas a função de solicitar a consulta ao OpenWeather e gravar a resposta, ela não será responsável por exibir os dados para o usuário final.
+
 
 #### Escopo Técnico
 
@@ -28,7 +30,39 @@ Deverão ser feitos 2 microservices:
 
 A comunicação entre os dois microservices deverá ser feita por algum serviço de mensageria. Aqui será utilizado o RabbitMQ.
 
+#### Explicação do Funcionamento/Design
 
+O código roda todo em containers Docker, sendo que temos 4 amarradas por um docker-compose:
+
+**a)** Microservice1 / **b)** Microservice2 / **c)** RabbitMQ / **d)** PostgreSQL
+
+Os containers RabbitMQ e PostgreSQL são containers pré-compilados pelos seus mantenedores e utilizados praticamente as-is.
+
+O **Microservice2** tem como responsabilidade escutar as solicitações de previsão do tempo vindas do broker e fazer a consulta no OpenWeather. 
+O script responsável por ouvir as solicitações é o **WeatherUpdatesHandler**. Ele está construído de tal forma que pode ser convertido facilmente  em um Facade caso deseja-se tornar esse microservice compatível com outros provedores do clima ou facilitar a criação de um novo para um outro provider.
+
+Ao receber uma solicitação de update de previsão, ele instancia um objeto do tipo **OpenWeatherClient** que é responsável pela efetiva consulta no OpenWeather. 
+A resposta é devolvida em um objeto **Forecast** para WeatherUpdatesHandler que é responsável também por devolver os resultados ao broker. 
+
+O **Microservice1** expõe uma API rest para solicitar a consulta tendo parâmetros o nome da cidade e o código do país (ISO-3166) ou apenas o nome da cidade (nesse caso o microservice adicionará automaticamente BR).
+Pode-se ver as duas formas nas chamadas abaixo:
+```bash
+curl http://localhost:5000/weather/v1.0/updateForecasts/Ibirama,BR
+curl http://localhost:5000/weather/v1.0/updateForecasts/Blumenau
+curl http://localhost:5000/weather/v1.0/updateForecasts/Oslo,NO  
+```
+
+Uma vez requisitado pela API REST (que está no script app.py), a requisição é enviada para o broker de forma assíncrona.
+
+Uma instância da classe **WeatherResponseHandler** fica em execução em uma thread separada ouvindo as respostas vindas do broker. 
+
+A resposta é persistida no banco de dados PostgreSQL através da library SQLAlchemy. No entanto, antes de persistir os dados é verificado se já existe uma previsão para aquele dia e para aquela cidade. Se existir os dados são sobrescritos pois não faz sentido manter duas previsões do tempo para o mesmo dia e para a mesma cidade.
+
+##### Comunicação com o broker
+
+A comunicação é feita através de dois objetos que estão nas pastas broker_interface: GenericProducer e GenericConsumer. Fica como to-do converter essas classes em uma library. No momento optou-se em duplicá-las dentro de cada microservice para facilitar o build do container. Também é necessário implementar/melhorar alguns mecanismos de tolerância à falhas como re-conexão. 
+
+As requisições do microservice1 para o microservice2 são feitas pelo tópico **weatherUpdateRequest** enquanto que as respostas trafegam pelo **weatherUpdateResponse**.
 
 #### Testando o código
 
@@ -47,7 +81,7 @@ No Windows:
 set OWMAPI=XPTO
 ```
 
-Obtendo os fontes
+##### Obtendo os fontes
 
 ```bash
 git clone https://github.com/cassioeskelsen/open-weather-ms.git
@@ -63,7 +97,7 @@ Windows:
 env.bat
 ```
 
-Construindo e subindo o ambiente docker
+##### Construindo e subindo o ambiente docker
 ```bash
 docker-compose up -d --build
 ```
@@ -78,7 +112,7 @@ Solicita a previsão do tempo no OpenWeather e grava no banco (sempre no format 
 python weather.py -r Indaial,BR
 ```
 
-lista a previsão previamente gravada:_
+lista a previsão previamente gravada:
 ```bash
 python weather.py -l Indaial,BR
 ```
@@ -88,9 +122,17 @@ solicita e lista a previsão (delay de 1 segundo para dar tempo de buscar no Ope
 python weather.py -s Blumenau,BR
 ```
 
-#### Todos comandos de uma vez (linux)
+Alternativamente pode ser usado o curl para solicitar a previsão no OpenWeather, Exemplo:
+
+```bash
+curl  http://localhost:5000/weather/v1.0/updateForecasts/Lontras,BR
+```
+
+
+##### Todos comandos de uma vez (linux)
 ```bash
 git clone https://github.com/cassioeskelsen/open-weather-ms.git
+cd open-weather-ms
 source ./env.sh
 docker-compose up -d --build
 python weather.py -r Indaial,BR
@@ -98,7 +140,10 @@ python weather.py -l Indaial,BR
 python weather.py -s Blumenau,BR
 ```
 
-##### Testes unitários
+##### Testes unitários e de Integração
+
+Obs: por enquanto os testes rodam na base quente e não foi feito mock-up do broker, ele precisa estar no ar para os testes passarem.
+
 ```bash
 python -m unittest discover -s tests -v
 ```
