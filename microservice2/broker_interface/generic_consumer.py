@@ -30,11 +30,6 @@ class GenericConsumer(object):
     def open_connection(self):
         parameters = pika.URLParameters(self._url)
         self._connection = pika.BlockingConnection(parameters)
-        # self._connection = pika.BlockingConnection(
-        #    pika.ConnectionParameters(
-        #        host="rabbitmq", connection_attempts=5, retry_delay=5
-        #    )
-        # )
 
     def setup_channel(self):
         channel = self._connection.channel()

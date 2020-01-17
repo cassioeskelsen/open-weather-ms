@@ -22,7 +22,7 @@ class SetupTest(unittest.TestCase):
             "weather_description": "poucas nuvens",
         }
 
-        from microservice2.open_weather.daily_forecast import DailyForecast
+        from microservice2.models.daily_forecast import DailyForecast
 
         f = DailyForecast(
             datetime=1579186800,
