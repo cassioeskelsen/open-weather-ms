@@ -66,6 +66,8 @@ As requisições do microservice1 para o microservice2 são feitas pelo tópico 
 
 #### Testando o código
 
+**Estou considerando que você já tenha instalado o Python3, o PIP3, docker e docker-compose**
+
 :warning: **Atenção**
 
 Você deve setar a variável de ambiente OWMAPI com sua chave de API do OpenWeather. Essa chave não é gravada no GITHUB pois é individual
@@ -139,6 +141,7 @@ curl  http://localhost:5000/weather/v1.0/updateForecasts/Lontras,BR
 ```bash
 git clone https://github.com/cassioeskelsen/open-weather-ms.git
 cd open-weather-ms
+export OWMAPI=SUA_API
 source ./env.sh
 docker-compose up -d --build
 pip3 install -r requirements.txt

@@ -1,7 +1,7 @@
 # Docker Compose description of the combined application.
 #
 # 'docker-compose up' will run this.
-version: "3.7"  # requires Docker Compose 1.13 or later
+version: "3.3"  # requires Docker Compose 1.13 or later
 
 services:
   microservice1:
